@@ -1,6 +1,6 @@
 # MediaMerge — Media Asset Management & Streaming
 
-MediaMerge is a Python-first full-stack media platform combining:
+MediaMerge is a Python Full-Stack media platform combining:
 
 - Digital Asset Management (DAM)
 - Media upload and metadata
