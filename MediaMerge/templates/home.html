@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaMerge</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #10131a; color: #f5f7fa; }
+        header { padding: 20px 5%; background: #171b24; display:flex; justify-content:space-between; }
+        main { padding: 5%; }
+        .card { background:#1d2330; padding:20px; border-radius:12px; margin:15px 0; }
+        input, button { padding:10px; margin:5px; border-radius:6px; border:0; }
+        button { cursor:pointer; }
+        video { width:100%; max-width:900px; background:black; }
+        pre { white-space:pre-wrap; }
+    </style>
+</head>
+<body>
+<header>
+    <strong>MediaMerge</strong>
+    <span>Media Asset Management + Streaming</span>
+</header>
+<main>
+    <div class="card">
+        <h2>API Demo</h2>
+        <p>Use the REST API to register, upload assets, process HLS, manage rights, subscribe, and stream.</p>
+        <p>Admin: <a href="/admin/" style="color:#7db5ff">/admin/</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Login</h3>
+        <input id="username" placeholder="username">
+        <input id="password" type="password" placeholder="password">
+        <button onclick="login()">Login</button>
+        <pre id="output"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Recommendations</h3>
+        <button onclick="recommend()">Load Recommendations</button>
+        <pre id="recs"></pre>
+    </div>
+</main>
+<script>
+let token = localStorage.getItem("access") || "";
+
+async function login() {
+    const r = await fetch("/api/auth/login/", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            username:document.getElementById("username").value,
+            password:document.getElementById("password").value
+        })
+    });
+    const data = await r.json();
+    if(data.access) {
+        token = data.access;
+        localStorage.setItem("access", token);
+    }
+    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+}
+
+async function recommend() {
+    const r = await fetch("/api/recommendations/", {
+        headers:{"Authorization":"Bearer " + token}
+    });
+    document.getElementById("recs").textContent =
+        JSON.stringify(await r.json(), null, 2);
+}
+</script>
+</body>
+</html>
